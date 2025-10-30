@@ -1,0 +1,49 @@
+import os
+import requests
+from urllib.parse import urlparse
+import uuid
+
+def fetch_image():
+    # Prompt user for image URL
+    url = input("Enter the URL of the image you want to fetch: ")
+
+    # Create directory if it doesn't exist
+    folder = "Fetched_Images"
+    os.makedirs(folder, exist_ok=True)
+
+    try:
+        # Send HTTP request
+        response = requests.get(url, timeout=10)
+        response.raise_for_status()  # Raise error for bad status codes
+
+        # Extract filename from URL
+        parsed_url = urlparse(url)
+        filename = os.path.basename(parsed_url.path)
+
+        # If no filename, generate one
+        if not filename:
+            filename = f"image_{uuid.uuid4().hex}.jpg"
+
+        # Full path to save image
+        filepath = os.path.join(folder, filename)
+
+        # Save image in binary mode
+        with open(filepath, "wb") as f:
+            f.write(response.content)
+
+        print(f"✅ Image successfully fetched and saved as: {filepath}")
+
+    except requests.exceptions.MissingSchema:
+        print("❌ Invalid URL. Please include http:// or https://")
+    except requests.exceptions.HTTPError as e:
+        print(f"❌ HTTP error occurred: {e}")
+    except requests.exceptions.ConnectionError:
+        print("❌ Connection error. Please check your internet connection.")
+    except requests.exceptions.Timeout:
+        print("❌ Request timed out. Try again later.")
+    except Exception as e:
+        print(f"❌ An unexpected error occurred: {e}")
+
+# Run the program
+if __name__ == "__main__":
+    fetch_image()
