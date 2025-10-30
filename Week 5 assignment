@@ -1,0 +1,65 @@
+# Parent class
+class Device:
+    def __init__(self, brand, model):
+        self.brand = brand
+        self.model = model
+    
+    def device_info(self):
+        return f"{self.brand} {self.model}"
+
+# Child class (inherits from Device)
+class Smartphone(Device):
+    def __init__(self, brand, model, storage, battery):
+        super().__init__(brand, model)   # call parent constructor
+        self.__storage = storage         # encapsulated (private) attribute
+        self.battery = battery
+    
+    # Encapsulation: controlled access to storage
+    def get_storage(self):
+        return self.__storage
+    
+    def set_storage(self, new_storage):
+        if new_storage > self.__storage:
+            self.__storage = new_storage
+        else:
+            print("Cannot reduce storage size!")
+
+    def charge(self):
+        print(f"{self.device_info()} is charging 🔋")
+
+    def call(self, contact):
+        print(f"Calling {contact} from {self.device_info()} 📞")
+
+# Example usage
+phone1 = Smartphone("Samsung", "Galaxy S24", 128, "85%")
+phone1.call("Alice")
+phone1.charge()
+print("Storage:", phone1.get_storage())
+phone1.set_storage(256)   # upgrade storage
+print("Upgraded Storage:", phone1.get_storage())
+
+
+
+
+
+class Vehicle:
+    def move(self):
+        print("This vehicle moves in some way.")
+
+class Car(Vehicle):
+    def move(self):
+        print("Driving 🚗")
+
+class Plane(Vehicle):
+    def move(self):
+        print("Flying ✈️")
+
+class Boat(Vehicle):
+    def move(self):
+        print("Sailing 🚤")
+
+# Polymorphism in action
+vehicles = [Car(), Plane(), Boat()]
+
+for v in vehicles:
+    v.move()   # Each one behaves differently
